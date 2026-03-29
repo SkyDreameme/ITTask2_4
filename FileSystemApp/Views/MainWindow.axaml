@@ -1,0 +1,58 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:FileSystemApp.ViewModels"
+        xmlns:models="using:FileSystemApp.Models"
+        x:Class="FileSystemApp.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="File System Manager"
+        Width="900"
+        Height="700"
+        WindowStartupLocation="CenterScreen">
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Grid RowDefinitions="Auto,*,Auto" Margin="15">
+
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10">
+			<Button Command="{Binding CopySelectedCommand}" Padding="10,5">📋 Копировать</Button>
+			<Button Click="OnMoveButtonClick" Padding="10,5">📁 Переместить</Button>
+			<Button Command="{Binding DeleteSelectedCommand}" Padding="10,5">🗑 Удалить</Button>
+			<TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="#666"/>
+		</StackPanel>
+
+		<TreeView Grid.Row="1"
+                  ItemsSource="{Binding RootFolder.Children}"
+                  SelectedItem="{Binding SelectedElement}"
+                  Margin="0,15,0,15">
+			<TreeView.ItemTemplate>
+				<TreeDataTemplate ItemsSource="{Binding Children}">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<TextBlock Width="30">
+							<TextBlock.Text>
+								<Binding Path="Type">
+									<Binding.Converter>
+										<vm:ElementTypeIconConverter/>
+									</Binding.Converter>
+								</Binding>
+							</TextBlock.Text>
+						</TextBlock>
+						<TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+						<TextBlock Text="{Binding Size, StringFormat='({0} байт)'}" Foreground="#888" FontSize="12"/>
+					</StackPanel>
+				</TreeDataTemplate>
+			</TreeView.ItemTemplate>
+		</TreeView>
+
+		<Border Grid.Row="2" Background="#F5F5F5" Padding="15" CornerRadius="8">
+			<StackPanel>
+				<TextBlock FontWeight="Bold" Margin="0,0,0,10">Свойства элемента:</TextBlock>
+				<TextBlock Text="{Binding SelectedElement.Name, StringFormat='Имя: {0}'}"/>
+				<TextBlock Text="{Binding SelectedElement.Location, StringFormat='Путь: {0}'}"/>
+				<TextBlock Text="{Binding SelectedElement.Size, StringFormat='Размер: {0} байт'}"/>
+				<TextBlock Text="{Binding SelectedElement.Type, StringFormat='Тип: {0}'}"/>
+			</StackPanel>
+		</Border>
+	</Grid>
+</Window>
